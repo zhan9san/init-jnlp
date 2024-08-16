@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+export BASE_DIR=/shared
+cd $BASE_DIR || exit
+
+export JAVA_VERSION=21.0.2
+wget https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz && \
+  tar -zxf openjdk-${JAVA_VERSION}_linux-x64_bin.tar.gz && \
+  rm openjdk-${JAVA_VERSION}_linux-x64_bin.tar.gz
+
+export JENKINS_AGENT_VERSION=3261.v9c670a_4748a_9
+wget -O agent.jar "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${JENKINS_AGENT_VERSION}/remoting-${JENKINS_AGENT_VERSION}.jar"
+
+wget "https://raw.githubusercontent.com/jenkinsci/docker-agent/3261.v9c670a_4748a_9-1/jenkins-agent" \
+  && chmod a+x jenkins-agent
