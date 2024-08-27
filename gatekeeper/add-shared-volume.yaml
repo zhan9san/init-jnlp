@@ -1,0 +1,31 @@
+---
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-shared-volume
+spec:
+  applyTo:
+    - groups: [""]
+      kinds: ["Pod"]
+      versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: ["*"]
+        kinds: ["Pod"]
+    labelSelector:
+      matchLabels:
+        jenkins: slave
+      matchExpressions:
+        - key: jenkins/label
+          operator: Exists
+        - key: jenkins/label-digest
+          operator: Exists
+    namespaces:
+      - default
+  location: "spec.volumes[name:shared-volume]"
+  parameters:
+    assign:
+      value:
+        name: shared-volume
+        emptyDir: {}

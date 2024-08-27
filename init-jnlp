@@ -13,3 +13,8 @@ wget -O agent.jar "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoti
 
 wget "https://raw.githubusercontent.com/jenkinsci/docker-agent/master/jenkins-agent" \
   && chmod a+x jenkins-agent
+
+export JENKINS_JAVA_BIN=$BASE_DIR/jdk-$JAVA_VERSION/bin/java
+export JENKINS_AGENT_FILE=$BASE_DIR/agent.jar
+
+$BASE_DIR/jenkins-agent

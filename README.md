@@ -17,6 +17,16 @@ volume.
 
 It is recommended to replace all download URLs to your internal URLs.
 
+The Kubernetes plugin would inject some labels to pod template automatically.
+
+```yaml
+metadata:
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "590267eadb8beeaff73d0dee815c30ea86815a9c"
+    jenkins/label: "helm"
+```
+
 Original yaml
 
 ```yaml
@@ -32,6 +42,11 @@ spec:
 
 New yaml
 
+You can modify the yaml configuration in Jenkins Cloud configuration manually.
+There may be hundreds of templates in Jenkins Cloud configuration.
+
+Or you can modify the yaml configurations [by gatekeeper](./gatekeeper/).
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -45,23 +60,18 @@ spec:
       command:
         - /bin/sh
         - -c
-        - wget -qO- https://raw.githubusercontent.com/zhan9san/init-jnlp/main/init-jnlp | sh
+        - wget -O /shared/init-jnlp https://raw.githubusercontent.com/zhan9san/init-jnlp/main/init-jnlp
       volumeMounts:
         - name: shared-volume
           mountPath: /shared
   containers:
     - name: jnlp
       image: customized-python-jnlp:3.12
-      env:
-        - name: JENKINS_JAVA_BIN
-          value: /shared/jdk-21.0.2/bin/java
-        - name: JENKINS_AGENT_FILE
-          value: /shared/agent.jar
       volumeMounts:
         - name: shared-volume
           mountPath: /shared
       command:
-        - /shared/jenkins-agent
+        - /shared/init-jnlp
 ```
 
 ### Pros

@@ -1,0 +1,30 @@
+---
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-init-container
+spec:
+  applyTo:
+    - groups: [""]
+      kinds: ["Pod"]
+      versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: ["*"]
+        kinds: ["Pod"]
+    labelSelector:
+      matchLabels:
+        jenkins: slave
+      matchExpressions:
+        - key: jenkins/label
+          operator: Exists
+        - key: jenkins/label-digest
+          operator: Exists
+    namespaces:
+      - default
+  location: "spec.containers[name:jnlp].command"
+  parameters:
+    assign:
+      value:
+        - /shared/init-jnlp
